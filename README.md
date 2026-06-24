@@ -52,7 +52,7 @@ meditation/
 ```bash
 cd app
 npm install      # 최초 1회 (express)
-npm start        # http://localhost:4321  (PORT 환경변수로 변경 가능)
+npm start        # http://localhost:9180  (PORT 환경변수로 변경 가능)
 ```
 
 - 브라우저에서 열면 **3분할** 화면: ① 본문(개역한글) · ② 묵상 정리 · ③ 미리보기(인쇄 모습 그대로)

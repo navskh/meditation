@@ -7,7 +7,7 @@
  *  - /api/topics : 기존 주제 폴더 목록 (자동완성용)
  *  - /api/status : git 원격 정보
  *
- * 실행:  cd app && npm install && npm start   (기본 http://localhost:4321)
+ * 실행:  cd app && npm install && npm start   (기본 http://localhost:9180)
  */
 
 const express = require('express');
@@ -21,7 +21,7 @@ const ROOT = path.resolve(APP_DIR, '..'); // meditation 저장소 루트
 const TOPICS_DIR = path.join(ROOT, 'topics');
 const GENERATE = path.join(ROOT, 'generate.js');
 
-const PORT = process.env.PORT || 4321;
+const PORT = process.env.PORT || 9180;
 
 /* ───────────────────────── 유틸 ───────────────────────── */
 function gitRemote() {
