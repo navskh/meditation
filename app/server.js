@@ -14,6 +14,7 @@ const express = require('express');
 const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const bible = require('./bible');
 
 const APP_DIR = __dirname;
 const ROOT = path.resolve(APP_DIR, '..'); // meditation 저장소 루트
@@ -49,6 +50,18 @@ app.get('/api/status', (req, res) => {
 
 app.get('/api/topics', (req, res) => {
   res.json({ topics: listTopics() });
+});
+
+// 개역한글 본문 조회: /api/bible?ref=창세기 19장
+app.get('/api/bible', (req, res) => {
+  const result = bible.parseRef(req.query.ref);
+  if (!result.ok) return res.status(400).json(result);
+  res.json(result);
+});
+
+// 책 이름 목록 (자동완성용)
+app.get('/api/bible/books', (req, res) => {
+  res.json({ books: bible.BOOKS });
 });
 
 app.post('/api/publish', (req, res) => {

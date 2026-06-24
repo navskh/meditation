@@ -11,6 +11,7 @@
   :root {
     --bg: #f6f4ef; --panel: #ffffff; --ink: #2b2722; --muted: #8a8378;
     --line: #e7e2d8; --accent: #8a6d3b; --accent-soft: #f0e9da;
+    --pick: #fbf3df; --pick-line: #d9c596;
     --sans: "Noto Sans KR", system-ui, sans-serif;
     --serif: "Noto Serif KR", Georgia, serif;
   }
@@ -24,45 +25,82 @@
   .topbar .spacer { flex: 1; }
   .field { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
   .field input { font-family: var(--sans); font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
-  .field input#topic { width: 130px; }
+  .field input#topic { width: 120px; }
   .btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--sans); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
   .btn:hover { filter: brightness(1.07); }
   .btn:disabled { opacity: .5; cursor: not-allowed; filter: none; }
   .btn.ghost { background: #fff; color: var(--accent); }
   .status { font-size: 12px; color: var(--muted); }
 
-  /* 2분할 */
-  .panes { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
-  .pane { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
+  /* 3분할 */
+  .panes { flex: 1; display: grid; grid-template-columns: 1.05fr 1fr 1.1fr; min-height: 0; }
+  .pane { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); background: var(--panel); }
   .pane:last-child { border-right: 0; }
-  .pane-head { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .04em; padding: 9px 16px; border-bottom: 1px solid var(--line); background: var(--panel); display: flex; align-items: center; justify-content: space-between; }
+  .pane-head { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .04em; padding: 9px 16px; border-bottom: 1px solid var(--line); background: var(--panel); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 
-  /* 에디터 */
-  #editor { flex: 1; border: 0; outline: 0; resize: none; padding: 22px 24px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; line-height: 1.7; color: var(--ink); background: #fffdf9; }
+  /* ── 본문 패널 ── */
+  .ref-bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .ref-bar input { flex: 1; font-family: var(--sans); font-size: 14px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; }
+  .ref-bar .btn { padding: 8px 13px; }
+  .verse-scroll { flex: 1; overflow-y: auto; padding: 8px 6px 60px; }
+  .ref-hint { color: var(--muted); font-size: 13px; line-height: 1.7; text-align: center; padding: 40px 24px; }
+  .ref-hint code { background: var(--bg); padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, monospace; }
+  .passage-title { font-family: var(--serif); font-size: 15px; font-weight: 700; padding: 6px 12px 10px; color: var(--accent); }
 
-  /* 미리보기 (공개 뷰어와 동일 타이포) */
-  .preview-scroll { flex: 1; overflow-y: auto; padding: 28px 26px; }
-  .sheet { background: #fff; max-width: 680px; margin: 0 auto; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.05); padding: 44px 48px; }
-  .doc-topic { display: inline-block; font-size: 12px; color: var(--accent); background: var(--accent-soft); padding: 3px 12px; border-radius: 999px; margin-bottom: 18px; letter-spacing: .04em; }
-  .doc { font-family: var(--serif); color: var(--ink); line-height: 1.9; font-size: 16.5px; }
-  .doc h1 { font-size: 27px; margin: 0 0 18px; line-height: 1.35; }
-  .doc h2 { font-size: 20px; margin: 30px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
-  .doc h3 { font-size: 17px; margin: 22px 0 8px; color: var(--accent); }
-  .doc p { margin: 12px 0; }
+  .verse { display: flex; gap: 9px; padding: 7px 11px; border-radius: 8px; cursor: text; position: relative; }
+  .verse:hover { background: #faf8f3; }
+  .verse.picked { background: var(--pick); box-shadow: inset 3px 0 0 var(--pick-line); }
+  .vnum { flex: 0 0 auto; min-width: 22px; height: 22px; margin-top: 2px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; padding: 0 5px; }
+  .verse.picked .vnum { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .vtext { font-family: var(--serif); font-size: 15.5px; line-height: 1.78; flex: 1; }
+  .vmemos { margin: 6px 0 2px 31px; }
+  .vmemo { display: flex; align-items: flex-start; gap: 6px; font-size: 13px; color: #6c6456; background: #fff; border: 1px solid var(--pick-line); border-radius: 8px; padding: 6px 9px; margin-top: 5px; line-height: 1.55; }
+  .vmemo .ph { color: var(--accent); font-style: italic; }
+  .vmemo .del { margin-left: auto; cursor: pointer; color: var(--muted); border: 0; background: none; font-size: 14px; line-height: 1; padding: 0 2px; }
+  .vmemo .del:hover { color: #b4452f; }
+  .vmemo-add { margin: 4px 0 2px 31px; }
+  .vmemo-add button { font-size: 12px; color: var(--accent); background: none; border: 1px dashed var(--pick-line); border-radius: 7px; padding: 3px 9px; cursor: pointer; }
+
+  /* 드래그 시 뜨는 메모 버튼 */
+  #memoFab { position: absolute; z-index: 40; transform: translate(-50%, -100%); background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 6px 11px; font-size: 12px; font-family: var(--sans); cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.2); display: none; white-space: nowrap; }
+
+  /* ── 묵상 작성 ── */
+  #reflection { flex: 1; border: 0; outline: 0; resize: none; padding: 20px 22px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; line-height: 1.75; color: var(--ink); background: #fffdf9; }
+
+  /* ── 미리보기 ── */
+  .preview-scroll { flex: 1; overflow-y: auto; padding: 24px 22px; background: var(--bg); }
+  .sheet { background: #fff; max-width: 640px; margin: 0 auto; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.05); padding: 40px 44px; }
+  .doc-topic { display: inline-block; font-size: 12px; color: var(--accent); background: var(--accent-soft); padding: 3px 12px; border-radius: 999px; margin-bottom: 16px; letter-spacing: .04em; }
+  .doc { font-family: var(--serif); color: var(--ink); line-height: 1.9; font-size: 16px; }
+  .doc h1 { font-size: 25px; margin: 0 0 16px; line-height: 1.35; }
+  .doc h2 { font-size: 19px; margin: 28px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  .doc h3 { font-size: 16px; margin: 20px 0 8px; color: var(--accent); }
+  .doc p { margin: 11px 0; }
   .doc ul, .doc ol { padding-left: 1.3em; }
   .doc li { margin: 5px 0; }
-  .doc blockquote { margin: 18px 0; padding: 12px 20px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; color: #5c5448; }
-  .doc hr { border: 0; border-top: 1px solid var(--line); margin: 26px 0; }
-  .doc code { font-family: ui-monospace, monospace; font-size: .9em; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  .doc blockquote { margin: 14px 0; padding: 10px 18px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; color: #5c5448; }
+  .doc blockquote p { margin: 7px 0; }
+  .doc hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+  .doc strong { color: var(--accent); }
 
-  /* 발행 결과 토스트 */
-  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2b2722; color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; max-width: 80vw; box-shadow: 0 8px 30px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50; }
+  /* 메모 작성 모달 */
+  #composer { position: fixed; inset: 0; background: rgba(20,18,15,.32); display: none; align-items: center; justify-content: center; z-index: 60; }
+  #composer.show { display: flex; }
+  .composer-card { background: #fff; width: min(460px, 92vw); border-radius: 14px; padding: 20px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .composer-card h3 { margin: 0 0 4px; font-size: 15px; font-family: var(--serif); }
+  .composer-card .target { font-size: 13px; color: var(--accent); margin-bottom: 12px; }
+  .composer-card .target .ph { font-style: italic; }
+  .composer-card textarea { width: 100%; min-height: 92px; resize: vertical; font-family: var(--sans); font-size: 14px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; line-height: 1.6; }
+  .composer-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+
+  /* 발행 토스트 */
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2b2722; color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; max-width: 80vw; box-shadow: 0 8px 30px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 70; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
   #toast a { color: #f0e9da; }
 
-  @media (max-width: 860px) {
-    .panes { grid-template-columns: 1fr; grid-template-rows: auto; overflow-y: auto; }
-    .pane { border-right: 0; border-bottom: 1px solid var(--line); height: 60vh; }
+  @media (max-width: 980px) {
+    .panes { grid-template-columns: 1fr; overflow-y: auto; }
+    .pane { border-right: 0; border-bottom: 1px solid var(--line); min-height: 56vh; }
   }
 </style>
 </head>
@@ -79,15 +117,32 @@
   </div>
 
   <div class="panes">
-    <!-- 에디터 -->
+    <!-- ① 본문 -->
     <section class="pane">
-      <div class="pane-head"><span>마크다운</span><span class="status" id="charCount"></span></div>
-      <textarea id="editor" spellcheck="false"></textarea>
+      <div class="pane-head"><span>본문 (개역한글)</span><span class="status" id="pickCount"></span></div>
+      <div class="ref-bar">
+        <input id="ref" placeholder="예) 창세기 19장 · 요한복음 3:16-18 · 시편 23" />
+        <button class="btn" id="loadBtn">불러오기</button>
+      </div>
+      <div class="verse-scroll" id="verseScroll">
+        <div class="ref-hint">
+          위에 <code>창세기 19장</code> 처럼 입력하고 <b>불러오기</b>를 누르세요.<br><br>
+          · 절 번호를 누르면 <b>묵상에 담기</b><br>
+          · 본문을 <b>드래그</b>하면 그 구절에 <b>메모</b>를 달 수 있어요
+        </div>
+      </div>
+      <button id="memoFab">📝 메모</button>
     </section>
 
-    <!-- 미리보기 -->
+    <!-- ② 묵상 작성 -->
     <section class="pane">
-      <div class="pane-head"><span>미리보기 (인쇄 모습)</span></div>
+      <div class="pane-head"><span>묵상 정리</span><span class="status" id="charCount"></span></div>
+      <textarea id="reflection" spellcheck="false" placeholder="오늘 본문에서 받은 묵상을 자유롭게 적어보세요.&#10;&#10;마크다운(## 소제목, - 목록, > 인용)도 그대로 쓸 수 있어요."></textarea>
+    </section>
+
+    <!-- ③ 미리보기 -->
+    <section class="pane">
+      <div class="pane-head"><span>미리보기 (발행 모습)</span></div>
       <div class="preview-scroll">
         <article class="sheet">
           <span class="doc-topic" id="pvTopic">주제</span>
@@ -97,78 +152,234 @@
     </section>
   </div>
 
+  <!-- 메모 작성 모달 -->
+  <div id="composer">
+    <div class="composer-card">
+      <h3>📝 구절 메모</h3>
+      <div class="target" id="composerTarget"></div>
+      <textarea id="composerText" placeholder="이 구절에서 받은 생각을 적어보세요."></textarea>
+      <div class="composer-actions">
+        <button class="btn ghost" id="composerCancel">취소</button>
+        <button class="btn" id="composerSave">저장</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 const $ = (s) => document.querySelector(s);
 
-/* ---------- 초기화 ---------- */
+/* ───────── 상태 ───────── */
+const state = {
+  passage: null,   // { ref, book, chapter, verses:[{verse,text}] }
+  picks: {},       // { 절번호: { picked:bool, memos:[{phrase, note}] } }
+};
+let pending = null; // 메모 작성 대상 { verse, phrase }
+
 function todayStr() {
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, '0');
+  const d = new Date(); const p = (n) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
-function starterDoc() {
-  return `# ${todayStr()} 묵상\n\n- **주제**: \n- **본문**: \n\n---\n\n`;
+function pickOf(v) {
+  if (!state.picks[v]) state.picks[v] = { picked: false, memos: [] };
+  return state.picks[v];
 }
 
-async function boot() {
-  $('#date').value = todayStr();
-  $('#editor').value = starterDoc();
-  renderPreview();
-
+/* ───────── 본문 불러오기 ───────── */
+async function loadPassage() {
+  const ref = $('#ref').value.trim();
+  if (!ref) { $('#ref').focus(); return; }
+  $('#loadBtn').disabled = true; $('#loadBtn').textContent = '…';
   try {
-    const s = await (await fetch('/api/status')).json();
-    $('#status').textContent = s.remote ? s.remote.replace(/^https?:\/\//, '') : '원격 없음';
+    const res = await fetch('/api/bible?ref=' + encodeURIComponent(ref));
+    const data = await res.json();
+    if (!res.ok) { toast('⚠️ ' + (data.error || '불러오기 실패')); return; }
+    state.passage = data;
+    state.picks = {};
+    renderVerses();
+    renderPreview();
   } catch (e) {
-    $('#status').textContent = '서버 상태 확인 실패';
+    toast('⚠️ ' + e.message);
+  } finally {
+    $('#loadBtn').disabled = false; $('#loadBtn').textContent = '불러오기';
+  }
+}
+
+function renderVerses() {
+  const p = state.passage;
+  const wrap = $('#verseScroll');
+  if (!p) return;
+  let html = `<div class="passage-title">${p.ref}</div>`;
+  for (const v of p.verses) {
+    const st = state.picks[v.verse] || { picked: false, memos: [] };
+    html += `<div class="verse ${st.picked ? 'picked' : ''}" data-v="${v.verse}">
+      <span class="vnum" data-pick="${v.verse}">${v.verse}</span>
+      <span class="vtext">${escapeHtml(v.text)}</span>
+    </div>`;
+    if (st.memos.length) {
+      html += `<div class="vmemos">` + st.memos.map((m, i) =>
+        `<div class="vmemo">${m.phrase ? `<span class="ph">“${escapeHtml(m.phrase)}”</span> ` : ''}<span>${escapeHtml(m.note)}</span>
+         <button class="del" data-del="${v.verse}:${i}" title="삭제">×</button></div>`
+      ).join('') + `</div>`;
+    }
+    if (st.picked && !st.memos.length) {
+      html += `<div class="vmemo-add"><button data-addmemo="${v.verse}">＋ 메모</button></div>`;
+    }
+  }
+  wrap.innerHTML = html;
+  updatePickCount();
+}
+
+function updatePickCount() {
+  const n = Object.values(state.picks).filter((x) => x.picked).length;
+  $('#pickCount').textContent = n ? `${n}구절 담음` : '';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+/* ───────── 구절 담기 / 메모 ───────── */
+$('#verseScroll').addEventListener('click', (e) => {
+  const pickBtn = e.target.closest('[data-pick]');
+  if (pickBtn) {
+    const v = Number(pickBtn.dataset.pick);
+    const st = pickOf(v);
+    st.picked = !st.picked;
+    renderVerses(); renderPreview();
+    return;
+  }
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    const [v, i] = del.dataset.del.split(':').map(Number);
+    state.picks[v].memos.splice(i, 1);
+    renderVerses(); renderPreview();
+    return;
+  }
+  const addMemo = e.target.closest('[data-addmemo]');
+  if (addMemo) {
+    openComposer(Number(addMemo.dataset.addmemo), '');
+    return;
+  }
+});
+
+/* 드래그 → 메모 버튼 */
+const fab = $('#memoFab');
+$('#verseScroll').addEventListener('mouseup', () => {
+  setTimeout(showFabForSelection, 0);
+});
+function showFabForSelection() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) { fab.style.display = 'none'; return; }
+  const text = sel.toString().trim();
+  const node = sel.anchorNode;
+  const verseEl = node && (node.nodeType === 3 ? node.parentElement : node).closest('.verse');
+  if (!text || !verseEl) { fab.style.display = 'none'; return; }
+  const v = Number(verseEl.dataset.v);
+  const rect = sel.getRangeAt(0).getBoundingClientRect();
+  const wrapRect = $('#verseScroll').getBoundingClientRect();
+  fab.style.left = (rect.left - wrapRect.left + $('#verseScroll').scrollLeft + rect.width / 2) + 'px';
+  fab.style.top = (rect.top - wrapRect.top + $('#verseScroll').scrollTop - 6) + 'px';
+  fab.style.display = 'block';
+  fab.onclick = () => { fab.style.display = 'none'; openComposer(v, text); };
+}
+document.addEventListener('mousedown', (e) => { if (e.target !== fab) fab.style.display = 'none'; });
+
+/* ───────── 메모 작성 모달 ───────── */
+function openComposer(verse, phrase) {
+  pending = { verse, phrase };
+  const t = phrase
+    ? `${state.passage.book} ${state.passage.chapter}:${verse} — <span class="ph">“${escapeHtml(phrase)}”</span>`
+    : `${state.passage.book} ${state.passage.chapter}:${verse}`;
+  $('#composerTarget').innerHTML = t;
+  $('#composerText').value = '';
+  $('#composer').classList.add('show');
+  setTimeout(() => $('#composerText').focus(), 30);
+}
+function closeComposer() { $('#composer').classList.remove('show'); pending = null; }
+$('#composerCancel').addEventListener('click', closeComposer);
+$('#composer').addEventListener('click', (e) => { if (e.target.id === 'composer') closeComposer(); });
+$('#composerSave').addEventListener('click', () => {
+  const note = $('#composerText').value.trim();
+  if (!note) { $('#composerText').focus(); return; }
+  const st = pickOf(pending.verse);
+  st.picked = true;
+  st.memos.push({ phrase: pending.phrase, note });
+  closeComposer();
+  renderVerses(); renderPreview();
+});
+$('#composerText').addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') $('#composerSave').click();
+});
+
+/* ───────── 컴파일 → 마크다운 ───────── */
+function compile() {
+  const topic = $('#topic').value.trim();
+  const p = state.passage;
+  const refl = $('#reflection').value.trim();
+  const lines = [];
+
+  const title = p ? `${p.ref} 묵상` : topic ? `${topic} 묵상` : `${$('#date').value || ''} 묵상`.trim();
+  lines.push(`# ${title}`, '');
+  if (p) lines.push(`**본문** · ${p.ref} · 개역한글`, '');
+
+  const picked = p ? p.verses.filter((v) => (state.picks[v.verse] || {}).picked) : [];
+  if (picked.length) {
+    lines.push('## 말씀', '');
+    for (const v of picked) {
+      lines.push(`> **${v.verse}** ${v.text}`);
+      for (const m of (state.picks[v.verse].memos || [])) {
+        lines.push('>', `> 📝 ${m.phrase ? `“${m.phrase}” — ` : ''}${m.note}`);
+      }
+      lines.push('');
+    }
   }
 
-  try {
-    const t = await (await fetch('/api/topics')).json();
-    $('#topicList').innerHTML = (t.topics || []).map((x) => `<option value="${x}">`).join('');
-  } catch {}
+  lines.push('## 묵상', '');
+  lines.push(refl || '_묵상을 작성하세요._', '');
+  return lines.join('\n');
 }
 
-/* ---------- 미리보기 ---------- */
+/* ───────── 미리보기 ───────── */
 function renderPreview() {
-  $('#preview').innerHTML = marked.parse($('#editor').value || '');
+  $('#preview').innerHTML = marked.parse(compile());
   $('#pvTopic').textContent = $('#topic').value.trim() || '주제';
-  const n = $('#editor').value.length;
+  const n = $('#reflection').value.length;
   $('#charCount').textContent = n ? `${n}자` : '';
 }
-$('#editor').addEventListener('input', renderPreview);
+$('#reflection').addEventListener('input', renderPreview);
 $('#topic').addEventListener('input', renderPreview);
+$('#ref').addEventListener('keydown', (e) => { if (e.key === 'Enter') loadPassage(); });
+$('#loadBtn').addEventListener('click', loadPassage);
 
-/* ---------- 새 묵상 ---------- */
+/* ───────── 새 묵상 ───────── */
 $('#newBtn').addEventListener('click', () => {
-  if (!confirm('에디터 내용을 새 묵상으로 초기화할까요? (저장되지 않은 내용은 사라집니다)')) return;
+  if (!confirm('지금 작업을 비우고 새 묵상을 시작할까요? (저장되지 않은 내용은 사라집니다)')) return;
+  state.passage = null; state.picks = {};
   $('#date').value = todayStr();
-  $('#editor').value = starterDoc();
+  $('#ref').value = ''; $('#reflection').value = '';
+  $('#verseScroll').innerHTML = `<div class="ref-hint">위에 <code>창세기 19장</code> 처럼 입력하고 <b>불러오기</b>를 누르세요.<br><br>· 절 번호를 누르면 <b>묵상에 담기</b><br>· 본문을 <b>드래그</b>하면 그 구절에 <b>메모</b>를 달 수 있어요</div>`;
+  $('#pickCount').textContent = '';
   renderPreview();
 });
 
-/* ---------- 발행 ---------- */
+/* ───────── 발행 ───────── */
 function toast(html, ms = 6000) {
-  const t = $('#toast');
-  t.innerHTML = html;
-  t.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => t.classList.remove('show'), ms);
+  const t = $('#toast'); t.innerHTML = html; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), ms);
 }
-
 $('#publishBtn').addEventListener('click', async () => {
   const topic = $('#topic').value.trim();
   const date = $('#date').value;
-  const content = $('#editor').value;
   if (!topic) { toast('주제를 입력하세요.'); $('#topic').focus(); return; }
   if (!date) { toast('날짜를 선택하세요.'); return; }
-  if (!content.trim()) { toast('내용이 비어 있어요.'); return; }
+  const content = compile();
+  const hasBody = state.passage || $('#reflection').value.trim();
+  if (!hasBody) { toast('본문을 불러오거나 묵상을 작성하세요.'); return; }
 
-  const btn = $('#publishBtn');
-  btn.disabled = true;
-  btn.textContent = '발행 중…';
+  const btn = $('#publishBtn'); btn.disabled = true; btn.textContent = '발행 중…';
   try {
     const res = await fetch('/api/publish', {
       method: 'POST',
@@ -177,14 +388,9 @@ $('#publishBtn').addEventListener('click', async () => {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || '발행 실패');
-
-    // 자동완성 목록 갱신
     if (![...$('#topicList').options].some((o) => o.value === topic)) {
-      const opt = document.createElement('option');
-      opt.value = topic;
-      $('#topicList').appendChild(opt);
+      const opt = document.createElement('option'); opt.value = topic; $('#topicList').appendChild(opt);
     }
-
     if (data.pushed) {
       toast(`✅ 발행 완료 — <code>${data.path}</code><br>1~2분 뒤 <a href="https://navskh.github.io/meditation/" target="_blank">공개 뷰어</a>에 반영됩니다.`, 9000);
     } else {
@@ -194,11 +400,23 @@ $('#publishBtn').addEventListener('click', async () => {
   } catch (e) {
     toast('⚠️ ' + e.message, 8000);
   } finally {
-    btn.disabled = false;
-    btn.textContent = '📮 발행';
+    btn.disabled = false; btn.textContent = '📮 발행';
   }
 });
 
+/* ───────── 초기화 ───────── */
+async function boot() {
+  $('#date').value = todayStr();
+  renderPreview();
+  try {
+    const s = await (await fetch('/api/status')).json();
+    $('#status').textContent = s.remote ? s.remote.replace(/^https?:\/\//, '') : '원격 없음';
+  } catch { $('#status').textContent = '서버 상태 확인 실패'; }
+  try {
+    const t = await (await fetch('/api/topics')).json();
+    $('#topicList').innerHTML = (t.topics || []).map((x) => `<option value="${x}">`).join('');
+  } catch {}
+}
 boot();
 </script>
 </body>
