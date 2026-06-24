@@ -13,7 +13,6 @@
     --line: #e7e2d8; --accent: #8a6d3b; --accent-soft: #f0e9da;
     --sans: "Noto Sans KR", system-ui, sans-serif;
     --serif: "Noto Serif KR", Georgia, serif;
-    --ai: #3b5b8a; --ai-soft: #e8eef6;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
@@ -32,8 +31,8 @@
   .btn.ghost { background: #fff; color: var(--accent); }
   .status { font-size: 12px; color: var(--muted); }
 
-  /* 3분할 */
-  .panes { flex: 1; display: grid; grid-template-columns: 1fr 1fr 360px; min-height: 0; }
+  /* 2분할 */
+  .panes { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
   .pane { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
   .pane:last-child { border-right: 0; }
   .pane-head { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .04em; padding: 9px 16px; border-bottom: 1px solid var(--line); background: var(--panel); display: flex; align-items: center; justify-content: space-between; }
@@ -56,30 +55,12 @@
   .doc hr { border: 0; border-top: 1px solid var(--line); margin: 26px 0; }
   .doc code { font-family: ui-monospace, monospace; font-size: .9em; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
 
-  /* AI 채팅 */
-  .chat { background: var(--panel); }
-  .chat-head .engine { display: flex; gap: 4px; }
-  .chat-head .engine button { font-size: 11px; padding: 3px 9px; border: 1px solid var(--line); background: #fff; border-radius: 999px; color: var(--muted); cursor: pointer; }
-  .chat-head .engine button.active { background: var(--ai-soft); color: var(--ai); border-color: var(--ai-soft); font-weight: 700; }
-  .chat-head .engine button:disabled { opacity: .35; cursor: not-allowed; }
-  .messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-  .msg { font-size: 13.5px; line-height: 1.65; padding: 10px 13px; border-radius: 12px; max-width: 92%; white-space: pre-wrap; word-break: break-word; }
-  .msg.user { align-self: flex-end; background: var(--accent-soft); color: #5c5448; border-bottom-right-radius: 3px; }
-  .msg.ai { align-self: flex-start; background: var(--ai-soft); color: #2c3a4f; border-bottom-left-radius: 3px; position: relative; }
-  .msg.ai .insert { margin-top: 7px; font-size: 11px; color: var(--ai); background: #fff; border: 1px solid #cdd9ea; border-radius: 6px; padding: 2px 8px; cursor: pointer; }
-  .msg.note { align-self: center; color: var(--muted); font-size: 12px; background: none; }
-  .chat-input { border-top: 1px solid var(--line); padding: 10px; display: flex; gap: 8px; }
-  .chat-input textarea { flex: 1; resize: none; height: 46px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; font-family: var(--sans); font-size: 13.5px; line-height: 1.5; }
-  .chat-input button { align-self: stretch; }
-  .hint { padding: 10px 16px; font-size: 11.5px; color: var(--muted); border-bottom: 1px solid var(--line); background: #fbfaf6; }
-  .hint b { color: var(--ai); }
-
   /* 발행 결과 토스트 */
   #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2b2722; color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; max-width: 80vw; box-shadow: 0 8px 30px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
   #toast a { color: #f0e9da; }
 
-  @media (max-width: 960px) {
+  @media (max-width: 860px) {
     .panes { grid-template-columns: 1fr; grid-template-rows: auto; overflow-y: auto; }
     .pane { border-right: 0; border-bottom: 1px solid var(--line); height: 60vh; }
   }
@@ -114,23 +95,6 @@
         </article>
       </div>
     </section>
-
-    <!-- AI 채팅 -->
-    <section class="pane chat">
-      <div class="pane-head chat-head">
-        <span>🤖 AI 함께쓰기</span>
-        <span class="engine" id="engine">
-          <button data-engine="claude">claude</button>
-          <button data-engine="codex">codex</button>
-        </span>
-      </div>
-      <div class="hint">말씀을 주고 <b>"핵심이 뭐야?"</b>, <b>"적용 질문 3개"</b>, <b>"내 묵상 다듬어줘"</b> 처럼 대화하세요. 답변 아래 <b>↓ 본문에 넣기</b>로 에디터에 붙일 수 있어요.</div>
-      <div class="messages" id="messages"></div>
-      <div class="chat-input">
-        <textarea id="chatBox" placeholder="메시지… (Enter 전송 / Shift+Enter 줄바꿈)"></textarea>
-        <button class="btn" id="sendBtn">보내기</button>
-      </div>
-    </section>
   </div>
 
   <div id="toast"></div>
@@ -138,9 +102,6 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 const $ = (s) => document.querySelector(s);
-let engine = 'claude';
-let engines = { claude: false, codex: false };
-const history = []; // {role:'user'|'assistant', content}
 
 /* ---------- 초기화 ---------- */
 function todayStr() {
@@ -159,20 +120,7 @@ async function boot() {
 
   try {
     const s = await (await fetch('/api/status')).json();
-    engines = s.engines;
-    const remote = s.remote ? s.remote.replace(/^https?:\/\//, '') : '원격 없음';
-    $('#status').textContent = remote;
-    // 엔진 버튼 상태
-    document.querySelectorAll('#engine button').forEach((b) => {
-      const e = b.dataset.engine;
-      b.disabled = !engines[e];
-      b.classList.toggle('active', e === engine);
-    });
-    if (!engines.claude && engines.codex) setEngine('codex');
-    if (!engines.claude && !engines.codex) {
-      addMsg('note', 'claude / codex CLI 를 찾지 못했어요. 채팅은 비활성화됩니다 (작성·발행은 가능).');
-      $('#sendBtn').disabled = true;
-    }
+    $('#status').textContent = s.remote ? s.remote.replace(/^https?:\/\//, '') : '원격 없음';
   } catch (e) {
     $('#status').textContent = '서버 상태 확인 실패';
   }
@@ -181,8 +129,6 @@ async function boot() {
     const t = await (await fetch('/api/topics')).json();
     $('#topicList').innerHTML = (t.topics || []).map((x) => `<option value="${x}">`).join('');
   } catch {}
-
-  addMsg('note', '오늘 묵상할 말씀이나 주제를 알려주시면 같이 시작해볼게요. 📖');
 }
 
 /* ---------- 미리보기 ---------- */
@@ -201,77 +147,6 @@ $('#newBtn').addEventListener('click', () => {
   $('#date').value = todayStr();
   $('#editor').value = starterDoc();
   renderPreview();
-});
-
-/* ---------- 엔진 선택 ---------- */
-function setEngine(e) {
-  if (!engines[e]) return;
-  engine = e;
-  document.querySelectorAll('#engine button').forEach((b) => b.classList.toggle('active', b.dataset.engine === e));
-}
-document.querySelectorAll('#engine button').forEach((b) =>
-  b.addEventListener('click', () => setEngine(b.dataset.engine))
-);
-
-/* ---------- 채팅 ---------- */
-function addMsg(role, content) {
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  if (role === 'ai') {
-    div.textContent = content;
-    const ins = document.createElement('button');
-    ins.className = 'insert';
-    ins.textContent = '↓ 본문에 넣기';
-    ins.onclick = () => {
-      const ed = $('#editor');
-      ed.value = ed.value.replace(/\s*$/, '') + '\n\n' + content + '\n';
-      renderPreview();
-      ed.scrollTop = ed.scrollHeight;
-    };
-    div.appendChild(document.createElement('br'));
-    div.appendChild(ins);
-  } else {
-    div.textContent = content;
-  }
-  $('#messages').appendChild(div);
-  $('#messages').scrollTop = $('#messages').scrollHeight;
-  return div;
-}
-
-async function send() {
-  const box = $('#chatBox');
-  const text = box.value.trim();
-  if (!text) return;
-  if (!engines[engine]) { addMsg('note', `'${engine}' 엔진을 쓸 수 없어요.`); return; }
-
-  box.value = '';
-  addMsg('user', text);
-  history.push({ role: 'user', content: text });
-
-  $('#sendBtn').disabled = true;
-  const thinking = addMsg('note', `${engine} 생각 중…`);
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ engine, messages: history }),
-    });
-    const data = await res.json();
-    thinking.remove();
-    if (!res.ok) throw new Error(data.error || '오류');
-    addMsg('ai', data.reply);
-    history.push({ role: 'assistant', content: data.reply });
-  } catch (e) {
-    thinking.remove();
-    addMsg('note', '⚠️ ' + e.message);
-  } finally {
-    $('#sendBtn').disabled = false;
-    box.focus();
-  }
-}
-$('#sendBtn').addEventListener('click', send);
-$('#chatBox').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
 });
 
 /* ---------- 발행 ---------- */
